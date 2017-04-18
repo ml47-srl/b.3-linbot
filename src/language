@@ -1,0 +1,99 @@
+start: <action>
+
+real_pattern:	?
+pattern:	<real_pattern> | [bool] | [complete_bool] | [nexq_wrapper] | [wrapper] | [nallq_wrapper] | [positive_wrapper] | [negative_wrapper]
+bool_pattern:	!<pattern> |
+		<pattern>
+spec: 		<starter><innerspec> # a path to specify some cells
+starter:	|
+		[core] |
+		[target]
+innerspec:	|
+		<innerspec><innerspec> |
+		[which(<bool_pattern>)] | # stops if you don't match the pattern
+
+		[child(<bool_pattern> | <num>)] | # starts all subcells matching the pattern, stops you
+		[parent] | # starts your supercell, stops you
+
+		[child_r(<bool_pattern> | <num>)] | # starts all subcells matching the pattern, recursively
+		[parent_r] | # starts all supercells, recursively
+
+		[child_re(<bool_pattern> | <num>)] | # starts all subcells matching the pattern, recursively, stops you, if you start a subcell
+		[parent_re] # starts the topmost supercell, stops you
+
+action:		[equals_replace(<arg_cell_id>, <arg_cell_id>)] |
+		[equals_law_impl(<arg_cell_id>, <arg_cell_id>)] |
+		[inequal_constants(<arg_cell_id>)] |
+		[add_eqt(<arg_cell_id>)] |
+		[rm_eqt(<arg_cell_id>)] |
+		[scope_insertion(<arg_cell_id>, <arg_cell>)] |
+		[scope_creation(<arg_cell_id>, <arg_indices>)] |
+		[implications_derivation(<arg_cell_id>, <arg_cell_id>)] |
+		[scope_exchange(<arg_cell_id>)] |
+		[case_creation(<arg_cell_id>, <arg_cell>)] |
+		[declaration(<arg_cell_id>)] |
+
+arg_cell_id:	<spec>
+arg_cell:	<spec>.get_path().get_cell()
+arg_indices:	<spec>.get_indices()
+
+num: <num><num> | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+##########################################################################################################################################################################
+example: (with different seperators)
+
+scope_insertion(core, which(complete_bool).get_path().get_cell()):
+
+for rule in db.rules {
+	if rule.is_complete_bool() {
+		db.scope_insertion(db.rules[0], rule);
+	}
+}
+
+###
+
+scope_insertion(core.which(negative_wrapper), ):
+
+for rule in db.rules {
+	if core.has_negative_wrapper() {
+		db.scope_insertion(db.rules[0], rule);
+	}
+}
+
+###
+
+scope_insertion(,):
+
+for rule1 in db.rules {
+	for rule2 in db.rules {
+		db.scope_insertion(rule1, rule2);
+	}
+}
+
+scope_insertion(child_r(*), child_r(*))
+
+for rule1 in db.rules {
+	for rule2 in db.rules {
+		for subcell1 in rule1.get_recursive_subcells() {
+			for subcell2 in rule2.get_recursive_subcells() {
+				db.scope_insertion(subcell1, subcell2);
+			}
+		}
+	}
+}
+
+scope_insertion(child_r(*).which(bool), child_r(*).which(bool))
+
+for rule1 in db.rules {
+	for rule2 in db.rules {
+		for subcell1 in rule1.get_recursive_subcells() {
+			for subcell2 in rule2.get_recursive_subcells() {
+				if subcell1.is_bool() {
+					if subcell2.is_bool() {
+						db.scope_insertion(subcell1, subcell2);
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,12 @@
+[package]
+name = "bot"
+version = "0.1.0"
+authors = ["memoryleak47 <memoryleak47@protonmail.ch>"]
+
+[dependencies]
+libsrl = { git = "https://github.com/ml47-srl/b.3-libsrl.git" }
+serde = "0.9"
+serde_json = "0.9"
+serde_derive = "0.9"
+rand = "0.3"
+time = "0.1"
