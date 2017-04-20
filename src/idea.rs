@@ -2,7 +2,6 @@ use super::action::Action;
 use libsrl::cell::Cell;
 use libsrl::db::Database;
 use super::chance::gen_range;
-use time::now;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Idea {
@@ -10,13 +9,6 @@ pub struct Idea {
 }
 
 impl Idea {
-	pub fn proof_timed(&self, rule : &Cell, db : &mut Database) -> (i64, bool) {
-		let start_time = now().to_timespec();
-		let res = self.proof(rule, db);
-		let time_it_took = (now().to_timespec() - start_time).num_milliseconds();
-		(time_it_took, res)
-	}
-
 	pub fn proof(&self, rule : &Cell, db : &mut Database) -> bool {
 		let mut count : usize = 0;
 		for action in &self.actions {

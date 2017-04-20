@@ -6,7 +6,9 @@ pub extern crate serde_derive;
 pub extern crate serde_json;
 pub extern crate rand;
 pub extern crate time;
-pub extern crate libsrl;
+pub extern crate botfather;
+use botfather::{Botfather, StopReason};
+use botfather::libsrl;
 
 mod chance;
 mod idea;
@@ -60,32 +62,6 @@ impl Bot {
 		string_vec.join("\n")
 	}
 
-	pub fn proof(&self, rule : &Cell, db : &mut Database) -> bool {
-		for i in 0..self.ideas.len() {
-			if self.ideas[i].proof(rule, db) {
-				return true;
-			}
-		}
-		false
-	}
-
-	pub fn practice(&mut self, rule : &Cell, db : &mut Database) -> bool {
-		let mut worked = false;
-		for i in 0..self.ideas.len() {
-			let (time, b) = self.ideas[i].proof_timed(rule, db);
-			let mut evaluation = 0;
-			evaluation -= ((time as f64) / (200 as f64)) as i32;
-			if b {
-				evaluation += 20;
-				worked = true;
-			} else {
-				evaluation -= 1;
-			}
-			self.execute_idea_evaluation(i, evaluation);
-		}
-		worked
-	}
-
 	fn execute_idea_evaluation(&mut self, i : usize, evaluation : i32) {
 		self.ideas[i].eval(evaluation);
 		let weighted_niceness = self.ideas[i].get_weighted_niceness();
@@ -108,8 +84,34 @@ impl Bot {
 	fn find_new_idea(&mut self) {
 		self.ideas.push(WeightedIdea::gen()); // XXX maybe use mutation of best ideas here
 	}
+
+	fn get_least_familiar_idea_index(&self) -> usize {
+		let mut smallest = 0;
+		for i in 1..self.ideas.len() {
+			if self.ideas[smallest].familiarness > self.ideas[i].familiarness {
+				smallest = i;
+			}
+		}
+		smallest
+	}
 }
 
+impl Botfather for Bot {
+	fn call(&self, db : &mut Database, target : &Cell) {
+		let id = self.get_least_familiar_idea_index();
+		self.ideas[id].proof(target, db);
+	}
+
+	fn assess(&mut self, stop_reason : StopReason, milliseconds : u32) {
+		let id = self.get_least_familiar_idea_index();
+		let val = ((milliseconds as f64) / (200 as f64)) as i32 + match stop_reason {
+			StopReason::Win => 20,
+			StopReason::Fail => -1,
+			StopReason::Timeout => -1,
+		};
+		self.execute_idea_evaluation(id, val);
+	}
+}
 
 impl WeightedIdea {
 	fn gen() -> WeightedIdea {
@@ -128,10 +130,6 @@ impl WeightedIdea {
 	fn mutate(&self) -> WeightedIdea {
 		let keep = self.get_weighted_niceness();
 		WeightedIdea { idea : self.idea.mutate(keep), niceness : 0, familiarness : 0 }
-	}
-
-	fn proof_timed(&self, rule : &Cell, db : &mut Database) -> (i64, bool) {
-		self.idea.proof_timed(rule, db)
 	}
 
 	fn proof(&self, rule : &Cell, db : &mut Database) -> bool {
