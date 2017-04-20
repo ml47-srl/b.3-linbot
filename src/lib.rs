@@ -7,8 +7,9 @@ pub extern crate serde_json;
 pub extern crate rand;
 pub extern crate time;
 pub extern crate botfather;
-use botfather::{Botfather, StopReason};
-use botfather::libsrl;
+
+pub use botfather::{Botfather, StopReason};
+pub use botfather::libsrl;
 
 mod chance;
 mod idea;
