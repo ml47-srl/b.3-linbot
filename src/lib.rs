@@ -25,11 +25,12 @@ use libsrl::db::Database;
 const MIN_IDEAS : usize = 7;
 
 // linear bot
+#[derive(Clone)]
 pub struct Bot {
 	ideas : Vec<WeightedIdea>
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct WeightedIdea {
 	idea : Idea,
 	niceness : i32,

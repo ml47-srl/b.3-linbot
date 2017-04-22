@@ -3,7 +3,7 @@ use libsrl::cell::Cell;
 use libsrl::db::Database;
 use super::chance::gen_range;
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Idea {
 	actions : Vec<Action>
 }

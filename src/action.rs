@@ -4,8 +4,7 @@ use libsrl::cell::Cell;
 use libsrl::gen::simple;
 use super::chance::chance;
 
-#[derive(Clone)]
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum Action {
 	EqualsLaw(Spec, Spec),
 	EqualsLawImpl(Spec, Spec),
