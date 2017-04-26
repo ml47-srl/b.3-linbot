@@ -22,7 +22,7 @@ use self::idea::Idea;
 use libsrl::cell::Cell;
 use libsrl::db::Database;
 
-const MIN_IDEAS : usize = 7;
+const MIN_IDEAS : usize = 30;
 
 // linear bot
 #[derive(Clone)]

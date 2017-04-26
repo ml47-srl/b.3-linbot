@@ -72,6 +72,7 @@ impl LocatedCellPath {
 		Ok(LocatedCellPath { path : new_cell_path, location : self.get_location() })
 	}
 
+/*
 	pub fn get_left_sibling(&self) -> Result<LocatedCellPath, SRLError> {
 		let new_cell_path = match self.path.get_left_sibling() {
 			Ok(x) => x,
@@ -79,6 +80,7 @@ impl LocatedCellPath {
 		};
 		Ok(LocatedCellPath { path : new_cell_path, location : self.get_location() })
 	}
+*/
 
 	pub fn get_children(&self) -> Vec<LocatedCellPath> {
 		let mut current_child = match self.get_child(0) {

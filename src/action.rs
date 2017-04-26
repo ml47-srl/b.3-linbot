@@ -148,7 +148,7 @@ impl Action {
 		return counter;
 	}
 
-	pub fn mutate(&self, keep : i32) -> Action {
+	pub fn mutate(&self, _ /* keep */ : i32) -> Action {
 		Action::gen() // XXX
 	}
 }
