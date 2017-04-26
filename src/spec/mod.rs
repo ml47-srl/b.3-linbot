@@ -23,7 +23,7 @@ impl Spec {
 	pub fn gen() -> Spec {
 		let starter = Starter::gen();
 		let mut steps = vec![];
-		for _ in 0..gen_range(0, 4) {
+		for _ in 0..gen_range(0, 2) {
 			steps.push(SpecStep::gen());
 		}
 		Spec { starter : starter, steps : steps }

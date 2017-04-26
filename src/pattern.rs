@@ -24,9 +24,9 @@ impl Pattern {
 	fn gen_with_id(next_id : usize) -> Pattern {
 		chance::<Pattern>(vec![
 			(4, &|| Pattern::AnyCell),
-			(7, &|| {
+			(1, &|| {
 				let mut vec = vec![];
-				for _ in 0..gen_range(0, 8) {
+				for _ in 0..gen_range(0, 4) {
 					vec.push(Pattern::gen_with_id(next_id));
 				}
 				Pattern::Complex { subpatterns : vec }
