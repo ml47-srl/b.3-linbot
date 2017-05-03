@@ -56,14 +56,6 @@ impl Bot {
 	}
 
 
-	pub fn to_string(&self) -> String {
-		let mut string_vec = vec![];
-		for idea in &self.ideas {
-			string_vec.push(serde_json::to_string(&idea).expect("serde_json::to_string failed on idea"));
-		}
-		string_vec.join("\n")
-	}
-
 	fn execute_idea_evaluation(&mut self, i : usize, evaluation : i32) {
 		self.ideas[i].eval(evaluation);
 		let weighted_niceness = self.ideas[i].get_weighted_niceness();
@@ -112,6 +104,14 @@ impl Botfather for Bot {
 			StopReason::Timeout => -1,
 		};
 		self.execute_idea_evaluation(id, val);
+	}
+
+	fn to_string(&self) -> String {
+		let mut string_vec = vec![];
+		for idea in &self.ideas {
+			string_vec.push(serde_json::to_string(&idea).expect("serde_json::to_string failed on idea"));
+		}
+		string_vec.join("\n")
 	}
 }
 
