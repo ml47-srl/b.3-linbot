@@ -1,15 +1,15 @@
-pub extern crate serde;
+extern crate serde;
 
 #[macro_use]
-pub extern crate serde_derive;
+extern crate serde_derive;
 
-pub extern crate serde_json;
-pub extern crate rand;
-pub extern crate time;
-pub extern crate botfather;
+extern crate serde_json;
+extern crate rand;
+extern crate time;
+extern crate botfather;
 
-pub use botfather::{Botfather, StopReason};
-pub use botfather::libsrl;
+use botfather::{Botfather, StopReason};
+use botfather::libsrl;
 
 mod chance;
 mod idea;
