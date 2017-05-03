@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["memoryleak47 <memoryleak47@protonmail.ch>"]
 
 [dependencies]
-botfather = { git = "https://github.com/ml47-srl/b.3-botfather.git", rev = "c3d71b2acef4b1e3f079399256cd5964c727c576" }
+botfather = { git = "https://github.com/ml47-srl/b.3-botfather.git" }
 serde = "0.9"
 serde_json = "0.9"
 serde_derive = "0.9"
