@@ -38,24 +38,6 @@ struct WeightedIdea {
 }
 
 impl Bot {
-	pub fn gen() -> Box<Bot> {
-		let mut ideas = vec![];
-		for _ in 0..MIN_IDEAS {
-			ideas.push(WeightedIdea::gen())
-		}
-		Box::new(Bot { ideas : ideas })
-	}
-
-	pub fn by_string(string : String) -> Box<Bot> {
-		let mut ideas = vec![];
-		for split in string.split('\n') {
-			if split.is_empty() { continue; }
-			ideas.push(serde_json::from_str(&split).expect("by_string failed"));
-		}
-		Box::new(Bot { ideas : ideas })
-	}
-
-
 	fn execute_idea_evaluation(&mut self, i : usize, evaluation : i32) {
 		self.ideas[i].eval(evaluation);
 		let weighted_niceness = self.ideas[i].get_weighted_niceness();
@@ -112,6 +94,23 @@ impl Botfather for Bot {
 			string_vec.push(serde_json::to_string(&idea).expect("serde_json::to_string failed on idea"));
 		}
 		string_vec.join("\n")
+	}
+
+	fn gen() -> Bot {
+		let mut ideas = vec![];
+		for _ in 0..MIN_IDEAS {
+			ideas.push(WeightedIdea::gen())
+		}
+		Bot { ideas : ideas }
+	}
+
+	fn by_string(string : &str) -> Bot {
+		let mut ideas = vec![];
+		for split in string.split('\n') {
+			if split.is_empty() { continue; }
+			ideas.push(serde_json::from_str(&split).expect("by_string failed"));
+		}
+		Bot { ideas : ideas }
 	}
 }
 
