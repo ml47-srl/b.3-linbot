@@ -24,9 +24,9 @@ use libsrl::db::Database;
 
 const MIN_IDEAS : usize = 7;
 
-// linear bot
 #[derive(Clone)]
-pub struct Bot {
+// linear bot
+pub struct Linbot {
 	ideas : Vec<WeightedIdea>
 }
 
@@ -37,7 +37,7 @@ struct WeightedIdea {
 	familiarness : u32 // number of usages
 }
 
-impl Bot {
+impl Linbot {
 	fn execute_idea_evaluation(&mut self, i : usize, evaluation : i32) {
 		self.ideas[i].eval(evaluation);
 		let weighted_niceness = self.ideas[i].get_weighted_niceness();
@@ -72,7 +72,7 @@ impl Bot {
 	}
 }
 
-impl Botfather for Bot {
+impl Botfather for Linbot {
 	fn call(&self, db : &mut Database, target : &Cell) {
 		let id = self.get_least_familiar_idea_index();
 		self.ideas[id].proof(target, db);
@@ -96,21 +96,21 @@ impl Botfather for Bot {
 		string_vec.join("\n")
 	}
 
-	fn gen() -> Bot {
+	fn gen() -> Linbot {
 		let mut ideas = vec![];
 		for _ in 0..MIN_IDEAS {
 			ideas.push(WeightedIdea::gen())
 		}
-		Bot { ideas : ideas }
+		Linbot { ideas : ideas }
 	}
 
-	fn by_string(string : &str) -> Bot {
+	fn by_string(string : &str) -> Linbot {
 		let mut ideas = vec![];
 		for split in string.split('\n') {
 			if split.is_empty() { continue; }
 			ideas.push(serde_json::from_str(&split).expect("by_string failed"));
 		}
-		Bot { ideas : ideas }
+		Linbot { ideas : ideas }
 	}
 }
 
